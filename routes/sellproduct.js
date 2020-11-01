@@ -170,10 +170,12 @@ router.get("/", function (req, res) {
                   ],
                 };
                 query2 = {
-                  text: "UPDATE product SET document_with_idx = to_tsvector($1 || ' ' || $2) WHERE product_id = $3",
+                  text: "UPDATE product SET document_with_idx = to_tsvector($1 || ' ' || $2 || ' ' || $3 || ' ' || $4) WHERE product_id = $5",
                   values: [
                     product.name,
                     product.pcbrand,
+                    product.os,
+                    product.processor,
                     product_id,
                   ],
                 };

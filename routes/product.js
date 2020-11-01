@@ -12,12 +12,6 @@ router.get("/:id", function (req, res) {
 
             try {
                 await client.query("BEGIN");
-                const recommenderQuery = {
-                    text:
-                        'UPDATE "recommender" SET priority = priority + 1 WHERE username = $1 AND product_id = $2',
-                    values: [sess.username, product_id],
-                };
-                await client.query(recommenderQuery);
                 const productCategoryQuery = {
                     text: 'SELECT "category" FROM "product" WHERE product_id = $1',
                     values: [product_id],
@@ -73,19 +67,10 @@ router.get("/:id", function (req, res) {
                 const productResp = await client.query(productUserQuery);
                 const details = productResp.rows;
 
-                const commentQuery = {
-                    text:
-                        'SELECT username, content FROM "comments" WHERE "comments".product_id = $1',
-                    values: [product_id],
-                    rowMode: "array",
-                };
-                const commentResp = await client.query(commentQuery);
-                const comments = commentResp.rows;
                 res.render("product", {
                     user: sess.username,
                     category: category,
                     details: details,
-                    comments: comments,
                 });
                 await client.query("COMMIT");
             } catch (err) {
@@ -95,35 +80,6 @@ router.get("/:id", function (req, res) {
                 client.release();
             }
         })().catch((err) => console.log(err.stack));
-    } else {
-        res.redirect("/login");
-    }
-});
-
-//comment post on product details page
-router.post("/:id", function (req, res) {
-    var sess = req.session;
-    var product_id = req.params.id;
-    var comment = req.body.comment;
-
-    if (sess.username) {
-        if (comment != '') {
-            const query = {
-                text:
-                    'INSERT INTO "comments" (username, product_id, content) VALUES ($1,$2,$3)',
-                values: [sess.username, product_id, comment],
-            };
-            db.query(query, function (err, resp) {
-                if (err) {
-                    res.send("Error");
-                } else {
-                    res.redirect("/product/" + product_id);
-                }
-            });
-        }
-        else{
-            res.redirect("/product/" + product_id);
-        }
     } else {
         res.redirect("/login");
     }

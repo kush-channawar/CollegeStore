@@ -11,8 +11,7 @@ router.get("/", function (req, res) {
 
         const query = {
             text:
-                'SELECT "product".product_name,"product".price,"product".years_of_usage,"product".product_image,"product".category,"product".product_id,"product".seller_id, priority from "product" INNER JOIN "recommender" ON "product".product_id = "recommender".product_id AND "recommender".username = $1 ORDER BY "priority" DESC;',
-            values: [sess.username],
+                'SELECT "product".product_name,"product".price,"product".years_of_usage,"product".product_image,"product".category,"product".product_id,"product".seller_id from "product";',
             rowMode: "array",
         };
 
@@ -24,7 +23,7 @@ router.get("/", function (req, res) {
                 res.render("homepage", {
                     product: product,
                     username: sess.username,
-                    searchmsg: "Recommended products for you",
+                    searchmsg: "Available products",
                     searchvalue: "",
                 });
             }
@@ -88,12 +87,12 @@ router.get("/:category", function (req, res) {
     var category = req.params.category;
     var query;
     if (sess.username) {
+        console.log(sess.username)
         query = {
             text:
-                'SELECT "product".product_name,"product".price,"product".years_of_usage,"product".product_image,"product".product_id,"product".seller_id, priority from "product" INNER JOIN "recommender" ON "product".product_id = "recommender".product_id AND "recommender".username = $1 WHERE "product".product_id IN (SELECT product_id FROM ' +
-                category +
-                ') ORDER BY "priority" DESC',
-            values: [sess.username],
+                'SELECT "product".product_name,"product".price,"product".years_of_usage,"product".product_image,' +
+                '"product".product_id,"product".seller_id from "product" WHERE "product".category=$1',
+            values: [category],
             rowMode: "array",
         };
         var searchmsg = "";
@@ -127,7 +126,7 @@ router.get("/:category", function (req, res) {
                     product: product,
                     username: sess.username,
                     category: _.capitalize([(string = category)]),
-                    heading: "Recommended products for you",
+                    heading: " Available products",
                     searchmsg: searchmsg,
                     searchvalue: null,
                 });

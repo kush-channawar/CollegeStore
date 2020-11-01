@@ -1,15 +1,15 @@
 {
-  "name": "thevstore",
+  "name": "collegestore",
   "version": "1.0.0",
   "description": "CollegeStore",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "AkashKamble",
+  "author": "SushilMahajan",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^4.0.1",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
@@ -17,7 +17,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "html-pdf": "^2.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "multer": "^1.4.2",
     "nodemailer": "^6.4.6",
     "pg": "^7.18.2"
@@ -25,10 +25,10 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Aka-sky/TheStore.git"
+    "url": "git+https://github.com/sushilmahajan/CollegeStore"
   },
   "bugs": {
-    "url": "https://github.com/Aka-sky/TheStore/issues"
+    "url": "https://github.com/sushilmahajan/CollegeStore/issues"
   },
-  "homepage": "https://github.com/Aka-sky/TheStore#readme"
+  "homepage": "https://github.com/sushilmahajan/CollegeStore#readme"
 }

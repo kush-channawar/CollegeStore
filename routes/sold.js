@@ -51,10 +51,7 @@ router.post("/:productID", function (req, res) {
         // things to do
         // 1. verify entered otp from database
         // 2. From product_id get product_name and product_image
-        // 3. Insert into transaction table seller_id from sess,
-        //    buyer_id,finalizedPrice from form post, product_name
-        //    product_image from product table
-        // 4. Now remove the product from product table where product_id is
+        // 3. Now remove the product from product table where product_id is
         //    req.params.product_id
         (async () => {
             const client = await db.connect();
@@ -88,23 +85,8 @@ router.post("/:productID", function (req, res) {
 
                     const sellerBuyer = await client.query(buyerSellerQuery);
 
-                    // Insert into transaction table seller_id from sess,
-                    //    buyer_id,finalizedPrice from form post, product_name
-                    //    product_image from product table
-                    const insertTransQuery = {
-                        text:
-                            'INSERT INTO "transaction" (buyer_id,seller_id,product_name,finalized_price,product_image) VALUES ($1,$2,$3,$4,$5)',
-                        values: [
-                            content.buyerOptions,
-                            sess.username,
-                            product.rows[0].product_name,
-                            content.finalPrice,
-                            product.rows[0].product_image,
-                        ],
-                    };
-                    await client.query(insertTransQuery);
-
-                    // 4. Now remove the product from product table where product_id is
+                    
+                    // 3. Now remove the product from product table where product_id is
                     //    req.params.product_id
                     const deleteQuery = {
                         text: 'DELETE FROM "product" WHERE product_id = $1',
@@ -125,26 +107,11 @@ router.post("/:productID", function (req, res) {
 
                     //console.log(html);
                     pdf
-                        .create(html, { format: "A4" })
+                        .create(html, { format: "A4", timeout: '100000' })
                         .toFile("./receipt.pdf", function (err, resp) {
                             if (err) {
                                 throw err;
                             } else {
-                                //     var cipherKey1 = crypto.createCipheriv(
-                                //   "aes128",
-                                //   process.env.CRYPTO_KEY,
-                                //   process.env.CRYPTO_IV
-                                // );
-                                // var str1 = cipherKey1.update(sellerBuyer.rows[0].email_id, "utf8", "hex");
-                                // str1 += cipherKey1.final("hex");
-
-                                //  var cipherKey2 = crypto.createCipheriv(
-                                //    "aes128",
-                                //    process.env.CRYPTO_KEY,
-                                //    process.env.CRYPTO_IV
-                                //  );
-                                // var str2 = cipherKey2.update(sellerBuyer.rows[1].email_id);
-                                // str2 += cipherKey2.final("hex")
                                 res.redirect(
                                     "/receipt/" +
                                     sellerBuyer.rows[0].email_id +

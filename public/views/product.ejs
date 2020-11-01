@@ -29,7 +29,7 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <a class="dropdown-item" href="/profile/<%= user %>">Profile</a>
                   <a class="dropdown-item" href="/request/0">My Deals</a>
-                  <a class="dropdown-item" href="/history/0">My History</a>
+                  
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="/logout">Log Out</a>
                 </div>
@@ -110,39 +110,11 @@
                 <h5>Email : <span class="details"><%= details[0][9] %></span></h5>
                 <h5>Preferred Location : <span class="details"><%= details[0][11] %></span></h5>
                 <h5>Branch/Year : <span class="details"><%= details[0][12] %></span></h5>
-                
               </div>
             </div>
           </section>
           <hr width="75%">
-          <section id="Comments">
-            <h2>Comments</h2>
-            <div class="container pb-cmnt-container"></div>
-              <div class="row">
-                  <div class="col-md-6 col-md-offset-3">
-                      <div class="panel panel-info">
-                          <div class="panel-body">
-                              <form method="POST">
-                                <textarea name="comment" id="comment" placeholder="Write your comment here!" class="pb-cmnt-textarea"></textarea>
-                                <button class="btn btn-primary pull-right" type="submit">Share</button>
-                              </form>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <div class="added-comments">
-            <% for(var i=0; i<comments.length; i++) { -%>
-              <div class="comment">
-                  <a href="/profile/<%= comments[i][0] %>" >
-                  <h6><%= comments[i][0] %></h6>
-                  </a>
-                  <p><%= comments[i][1] %></p>
-              </div>
-              <hr width="100%">
-            <% } -%>
-          </div>
-          </section>
+         
           <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
           <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
           <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>

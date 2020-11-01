@@ -16,6 +16,7 @@ const { Pool } = require("pg");
 var _ = require("lodash");
 var db = require('./database');
 var upload = require('./imgupload');
+var fs = require("fs");
 
 //Store cookies containing session id on client's browser
 app.use(cookieParser());
@@ -75,6 +76,7 @@ const requestRoutes = require('./routes/request');
 app.use('/request', requestRoutes)
 
 const soldRoutes = require('./routes/sold');
+const { Interface } = require("readline");
 app.use('/sold', soldRoutes)
 
 //------------------------------------------------------------------------------------------------
@@ -191,17 +193,6 @@ app.get("/deleteproduct/:productID", function (req, res) {
 app.get("/receipt/:email1/:email2", function (req, res) {
   var sess = req.session;
   if (sess.username) {
-    // var decipherKey1 = crypto.createDecipheriv("aes128",process.env.CRYPTO_KEY,process.env.CRYPTO_IV);
-    // var email1 = decipherKey1.update(req.params.email1,'hex','utf8');
-    // email1 += decipherKey1.final("utf8");
-
-    // var decipherKey2 = crypto.createDecipheriv(
-    //   "aes128",
-    //   process.env.CRYPTO_KEY,
-    //   process.env.CRYPTO_IV
-    // );
-    // var email2 = decipherKey2.update(req.params.email2,'hex','utf8');
-    // email2 += decipherKey2.final('utf8');
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -227,47 +218,7 @@ app.get("/receipt/:email1/:email2", function (req, res) {
       if (error) {
         console.log(error);
       } else {
-        res.redirect("/history/0");
-      }
-    });
-  } else {
-    res.redirect("/login");
-  }
-});
-
-//-----------------------------------------------------------------------------------------------------
-
-app.get("/history/:action", function (req, res) {
-  var sess = req.session;
-  if (sess.username) {
-    var query, action;
-    if (req.params.action == 0) {
-      // sold products by sess.username
-      query = {
-        text:
-          'SELECT buyer_id,product_name,finalized_price,product_image FROM "transaction" WHERE seller_id = $1',
-        values: [sess.username],
-      };
-      action = "sold";
-    } else {
-      query = {
-        text:
-          'SELECT seller_id,product_name,finalized_price,product_image FROM "transaction" WHERE buyer_id = $1',
-        values: [sess.username],
-      };
-      action = "bought";
-    }
-
-    db.query(query, function (err, resp) {
-      if (err) {
-        console.log(err);
-        res.send("Error! Try Again.");
-      } else {
-        res.render("history", {
-          username: sess.username,
-          transaction: resp.rows,
-          action: action,
-        });
+        res.redirect('/homepage')
       }
     });
   } else {

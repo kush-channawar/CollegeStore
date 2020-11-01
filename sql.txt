@@ -29,27 +29,9 @@ CREATE TABLE "cart" (
     FOREIGN KEY (product_id) REFERENCES "product" (product_id) ON DELETE CASCADE
 ); 
 
-CREATE table "comments" (
-comment_id SERIAL PRIMARY KEY,
-username character varying,
-product_id int,
-content character varying NOT NULL,
-FOREIGN KEY (product_id) REFERENCES "product" (product_id) ON DELETE CASCADE,
-FOREIGN KEY (username) REFERENCES "user" (username) ON DELETE CASCADE
-);
-
 CREATE TABLE "tempmail" (
     email character varying,
     otp character varying
-);
-
-CREATE TABLE "recommender" (
-	username character varying NOT NULL,
-	product_id int NOT NULL,
-	priority int DEFAULT '0',
-    	PRIMARY KEY (username, product_id),
-    	FOREIGN KEY (username) REFERENCES "user" (username) ON DELETE CASCADE,
-    	FOREIGN KEY (product_id) REFERENCES "product" (product_id) ON DELETE CASCADE
 ); 
 
 CREATE TABLE "requests" (
@@ -61,17 +43,6 @@ CREATE TABLE "requests" (
     FOREIGN KEY (buyer_id) REFERENCES "user" (username) ON DELETE CASCADE,
     FOREIGN KEY (seller_id) REFERENCES "user" (username) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES "product" (product_id) ON DELETE CASCADE
-);
-
-CREATE TABLE "transaction" (
-    transaction_id SERIAL PRIMARY KEY,
-    buyer_id character varying,
-    seller_id character varying,
-    product_name character varying NOT NULL,
-    finalized_price int NOT NULL,
-    product_image character varying NOT NULL,
-    FOREIGN KEY (buyer_id) REFERENCES "user" (username) ON DELETE CASCADE,
-    FOREIGN KEY (seller_id) REFERENCES "user" (username) ON DELETE CASCADE
 );
 
 CREATE TABLE "book"(
@@ -197,50 +168,6 @@ CREATE TABLE "pc"
 );
 
 
-
-CREATE OR REPLACE FUNCTION insertuser()
-RETURNS trigger AS
-$BODY$
-DECLARE 
-	t_row "product"%rowtype;
-BEGIN
-	FOR t_row in SELECT "product_id" FROM "product" LOOP
-        	INSERT INTO "recommender" VALUES(new."username",t_row."product_id",'0');
-        END LOOP;
-	RETURN new;
-END;
-$BODY$
-LANGUAGE plpgsql;
-
-CREATE TRIGGER user_t
-  AFTER INSERT
-  ON "user"
-  FOR EACH ROW
-  EXECUTE PROCEDURE insertuser();
-
-
-
-CREATE OR REPLACE FUNCTION insertproduct()
-RETURNS trigger AS
-$BODY$
-DECLARE 
-	t_row "user"%rowtype;
-BEGIN
-	FOR t_row in SELECT "username" FROM "user" LOOP
-        	INSERT INTO "recommender" VALUES(t_row."username",new."product_id",'0');
-        END LOOP;
-	RETURN new;
-END;
-$BODY$
-LANGUAGE plpgsql;
-
-CREATE TRIGGER product_t
-  AFTER INSERT
-  ON "product"
-  FOR EACH ROW
-  EXECUTE PROCEDURE insertproduct();
-
-
 CREATE VIEW bookview AS
 select "product".product_id,"product".product_name,"product".years_of_usage,"product".price,"product".product_image,"product".condition,"product".category,
 username, name, email_id, contact, location, year, "book".author,"book".publication,"book".edition,"book".subject
@@ -287,6 +214,3 @@ from "product" inner join "user" on
 ALTER TABLE product
 ADD COLUMN document_with_idx tsvector;
 CREATE INDEX document_idx ON product USING GIN(document_with_idx);
-
-//UPDATE product 
-//SET document_with_idx = to_tsvector();

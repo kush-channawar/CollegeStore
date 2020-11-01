@@ -98,11 +98,13 @@ router.get("/:action/:product", function (req, res) {
                             pass: process.env.STORE_PASS,
                         },
                     });
-
+                    // var iv = new Buffer(crypto.randomBytes(16))
+                    iv = process.env.CRYPTO_IV;
+                    var ivstring = iv.toString('hex').slice(0, 16);
                     var cipherKey = crypto.createCipheriv(
                         "aes128",
                         process.env.CRYPTO_KEY,
-                        process.env.CRYPTO_IV
+                        ivstring
                     );
                     var str = cipherKey.update(seller.rows[0].username, "utf8", "hex");
                     str += cipherKey.final("hex");

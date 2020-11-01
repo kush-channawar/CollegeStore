@@ -1,0 +1,724 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.2
+-- Dumped by pg_dump version 12.2
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: book; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.book (
+    product_id integer NOT NULL,
+    publication character varying NOT NULL,
+    edition character varying NOT NULL,
+    subject character varying NOT NULL,
+    author character varying NOT NULL,
+    CONSTRAINT notnullchecker CHECK ((NOT ((publication IS NULL) OR ((publication)::text = ''::text) OR ((edition IS NULL) OR ((edition)::text = ''::text)) OR ((subject IS NULL) OR ((subject)::text = ''::text)) OR ((author IS NULL) OR ((author)::text = ''::text)))))
+);
+
+
+ALTER TABLE public.book OWNER TO postgres;
+
+--
+-- Name: product; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.product (
+    product_id integer NOT NULL,
+    product_name character varying NOT NULL,
+    years_of_usage integer,
+    price integer NOT NULL,
+    product_image character varying,
+    seller_id character varying NOT NULL,
+    category character varying NOT NULL,
+    condition character varying NOT NULL,
+    document_with_idx tsvector
+);
+
+
+ALTER TABLE public.product OWNER TO postgres;
+
+--
+-- Name: user; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."user" (
+    username character varying NOT NULL,
+    name character varying NOT NULL,
+    email_id character varying NOT NULL,
+    password character varying NOT NULL,
+    contact character varying NOT NULL,
+    location character varying NOT NULL,
+    year character varying NOT NULL,
+    image character varying DEFAULT '../images/studentprofile.svg'::character varying
+);
+
+
+ALTER TABLE public."user" OWNER TO postgres;
+
+--
+-- Name: bookview; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.bookview AS
+ SELECT product.product_id,
+    product.product_name,
+    product.years_of_usage,
+    product.price,
+    product.product_image,
+    product.condition,
+    product.category,
+    "user".username,
+    "user".name,
+    "user".email_id,
+    "user".contact,
+    "user".location,
+    "user".year,
+    book.author,
+    book.publication,
+    book.edition,
+    book.subject
+   FROM ((public.product
+     JOIN public."user" ON (((product.seller_id)::text = ("user".username)::text)))
+     JOIN public.book ON ((product.product_id = book.product_id)));
+
+
+ALTER TABLE public.bookview OWNER TO postgres;
+
+--
+-- Name: calculator; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.calculator (
+    product_id integer NOT NULL,
+    brand character varying NOT NULL,
+    model character varying NOT NULL,
+    features character varying NOT NULL,
+    CONSTRAINT notnullchecker CHECK ((NOT ((brand IS NULL) OR ((brand)::text = ''::text) OR ((model IS NULL) OR ((model)::text = ''::text)) OR ((features IS NULL) OR ((features)::text = ''::text)))))
+);
+
+
+ALTER TABLE public.calculator OWNER TO postgres;
+
+--
+-- Name: calcview; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.calcview AS
+ SELECT product.product_id,
+    product.product_name,
+    product.years_of_usage,
+    product.price,
+    product.product_image,
+    product.condition,
+    product.category,
+    "user".username,
+    "user".name,
+    "user".email_id,
+    "user".contact,
+    "user".location,
+    "user".year,
+    calculator.brand,
+    calculator.model,
+    calculator.features
+   FROM ((public.product
+     JOIN public."user" ON (((product.seller_id)::text = ("user".username)::text)))
+     JOIN public.calculator ON ((product.product_id = calculator.product_id)));
+
+
+ALTER TABLE public.calcview OWNER TO postgres;
+
+--
+-- Name: cart; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.cart (
+    username character varying NOT NULL,
+    product_id integer NOT NULL
+);
+
+
+ALTER TABLE public.cart OWNER TO postgres;
+
+--
+-- Name: clothing; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.clothing (
+    product_id integer NOT NULL,
+    size character varying NOT NULL,
+    type character varying NOT NULL,
+    color character varying NOT NULL,
+    CONSTRAINT notnullchecker CHECK ((NOT ((size IS NULL) OR ((size)::text = ''::text) OR ((type IS NULL) OR ((type)::text = ''::text)) OR ((color IS NULL) OR ((color)::text = ''::text)))))
+);
+
+
+ALTER TABLE public.clothing OWNER TO postgres;
+
+--
+-- Name: clothview; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.clothview AS
+ SELECT product.product_id,
+    product.product_name,
+    product.years_of_usage,
+    product.price,
+    product.product_image,
+    product.condition,
+    product.category,
+    "user".username,
+    "user".name,
+    "user".email_id,
+    "user".contact,
+    "user".location,
+    "user".year,
+    clothing.size,
+    clothing.type,
+    clothing.color
+   FROM ((public.product
+     JOIN public."user" ON (((product.seller_id)::text = ("user".username)::text)))
+     JOIN public.clothing ON ((product.product_id = clothing.product_id)));
+
+
+ALTER TABLE public.clothview OWNER TO postgres;
+
+--
+-- Name: notes; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.notes (
+    product_id integer NOT NULL,
+    subject character varying NOT NULL,
+    topic character varying NOT NULL,
+    professor character varying NOT NULL,
+    noteyear character varying NOT NULL,
+    CONSTRAINT notnullchecker CHECK ((NOT ((subject IS NULL) OR ((subject)::text = ''::text) OR ((topic IS NULL) OR ((topic)::text = ''::text)) OR ((professor IS NULL) OR ((professor)::text = ''::text)) OR ((noteyear IS NULL) OR ((noteyear)::text = ''::text)))))
+);
+
+
+ALTER TABLE public.notes OWNER TO postgres;
+
+--
+-- Name: notes_product_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.notes_product_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.notes_product_id_seq OWNER TO postgres;
+
+--
+-- Name: notes_product_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.notes_product_id_seq OWNED BY public.notes.product_id;
+
+
+--
+-- Name: notesview; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.notesview AS
+ SELECT product.product_id,
+    product.product_name,
+    product.years_of_usage,
+    product.price,
+    product.product_image,
+    product.condition,
+    product.category,
+    "user".username,
+    "user".name,
+    "user".email_id,
+    "user".contact,
+    "user".location,
+    "user".year,
+    notes.topic,
+    notes.professor,
+    notes.noteyear,
+    notes.subject
+   FROM ((public.product
+     JOIN public."user" ON (((product.seller_id)::text = ("user".username)::text)))
+     JOIN public.notes ON ((product.product_id = notes.product_id)));
+
+
+ALTER TABLE public.notesview OWNER TO postgres;
+
+--
+-- Name: other; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.other (
+    product_id integer NOT NULL,
+    description character varying NOT NULL,
+    type character varying,
+    CONSTRAINT notnullchecker CHECK ((NOT ((description IS NULL) OR ((description)::text = ''::text) OR ((type IS NULL) OR ((type)::text = ''::text)))))
+);
+
+
+ALTER TABLE public.other OWNER TO postgres;
+
+--
+-- Name: otherview; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.otherview AS
+ SELECT product.product_id,
+    product.product_name,
+    product.years_of_usage,
+    product.price,
+    product.product_image,
+    product.condition,
+    product.category,
+    "user".username,
+    "user".name,
+    "user".email_id,
+    "user".contact,
+    "user".location,
+    "user".year,
+    other.type,
+    other.description
+   FROM ((public.product
+     JOIN public."user" ON (((product.seller_id)::text = ("user".username)::text)))
+     JOIN public.other ON ((product.product_id = other.product_id)));
+
+
+ALTER TABLE public.otherview OWNER TO postgres;
+
+--
+-- Name: pc; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.pc (
+    product_id integer NOT NULL,
+    os character varying,
+    ram character varying,
+    storage character varying,
+    brand character varying,
+    processor character varying,
+    CONSTRAINT notnullchecker CHECK ((NOT ((os IS NULL) OR ((os)::text = ''::text) OR (ram IS NULL) OR (storage IS NULL) OR ((brand IS NULL) OR ((brand)::text = ''::text)) OR ((processor IS NULL) OR ((processor)::text = ''::text)))))
+);
+
+
+ALTER TABLE public.pc OWNER TO postgres;
+
+--
+-- Name: pcview; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.pcview AS
+ SELECT product.product_id,
+    product.product_name,
+    product.years_of_usage,
+    product.price,
+    product.product_image,
+    product.condition,
+    product.category,
+    "user".username,
+    "user".name,
+    "user".email_id,
+    "user".contact,
+    "user".location,
+    "user".year,
+    pc.os,
+    pc.ram,
+    pc.storage,
+    pc.brand,
+    pc.processor
+   FROM ((public.product
+     JOIN public."user" ON (((product.seller_id)::text = ("user".username)::text)))
+     JOIN public.pc ON ((product.product_id = pc.product_id)));
+
+
+ALTER TABLE public.pcview OWNER TO postgres;
+
+--
+-- Name: product_product_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.product_product_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.product_product_id_seq OWNER TO postgres;
+
+--
+-- Name: product_product_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.product_product_id_seq OWNED BY public.product.product_id;
+
+
+--
+-- Name: requests; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.requests (
+    buyer_id character varying NOT NULL,
+    seller_id character varying NOT NULL,
+    product_id integer NOT NULL,
+    otp integer NOT NULL
+);
+
+
+ALTER TABLE public.requests OWNER TO postgres;
+
+--
+-- Name: tempmail; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tempmail (
+    email character varying,
+    otp character varying
+);
+
+
+ALTER TABLE public.tempmail OWNER TO postgres;
+
+--
+-- Name: notes product_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.notes ALTER COLUMN product_id SET DEFAULT nextval('public.notes_product_id_seq'::regclass);
+
+
+--
+-- Name: product product_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product ALTER COLUMN product_id SET DEFAULT nextval('public.product_product_id_seq'::regclass);
+
+
+--
+-- Data for Name: book; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.book (product_id, publication, edition, subject, author) FROM stdin;
+5	Pearson	12	Calculus	Thomas
+\.
+
+
+--
+-- Data for Name: calculator; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.calculator (product_id, brand, model, features) FROM stdin;
+8	Casio	fx-991ES plus	Equations, Matrices, Trigonometrc problem solving
+\.
+
+
+--
+-- Data for Name: cart; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.cart (username, product_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: clothing; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.clothing (product_id, size, type, color) FROM stdin;
+7	M	Boiler	Dark Blue
+10	L	Apron	White
+\.
+
+
+--
+-- Data for Name: notes; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.notes (product_id, subject, topic, professor, noteyear) FROM stdin;
+6	DBMS	All	Vahida Attar	2019
+\.
+
+
+--
+-- Data for Name: other; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.other (product_id, description, type) FROM stdin;
+\.
+
+
+--
+-- Data for Name: pc; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.pc (product_id, os, ram, storage, brand, processor) FROM stdin;
+9	Windows 10	4 GB	1 TB	Dell	Intel core i3
+11	Windows 10	8 GB	1 TB	HP	Intel core i5
+\.
+
+
+--
+-- Data for Name: product; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.product (product_id, product_name, years_of_usage, price, product_image, seller_id, category, condition, document_with_idx) FROM stdin;
+5	Thomas Calculus	2	200	../images/upImg1604246771186.jpg	sushil	books	Fine	'calculus':2,3 'thoma':1,4
+6	DBMS Notes	1	50	../images/sellicon.svg	sushil	notes	Good	'attar':6 'dbms':1,3 'note':2 'vahida':5
+9	Dell Inspiron 15 - 3000	3	25000	../images/sellicon.svg	sushil	pcs	Good	'10':7 '15':3 '3000':4 'core':9 'dell':1,5 'i3':10 'inspiron':2 'intel':8 'window':6
+8	Scientific Calculator	2	500	../images/upImg1604247311976.jpg	sushil	calculators	Good	'991es':6 'calcul':2 'casio':3 'fx':5 'fx-991es':4 'plus':7 'scientif':1
+7	Boiler Suit	2	100	../images/upImg1604247424068.jpg	sushil	clothing	Fine	'boiler':1,3 'suit':2
+11	HP Pavillion	2	35000	../images/sellicon.svg	sumit	pcs	Good	'10':5 'core':7 'hp':1,3 'i5':8 'intel':6 'pavillion':2 'window':4
+10	Lab Apron	1	100	../images/upImg1604248560035.jpg	sumit	clothing	Good	'apron':2,3 'lab':1
+\.
+
+
+--
+-- Data for Name: requests; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.requests (buyer_id, seller_id, product_id, otp) FROM stdin;
+\.
+
+
+--
+-- Data for Name: tempmail; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.tempmail (email, otp) FROM stdin;
+\.
+
+
+--
+-- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."user" (username, name, email_id, password, contact, location, year, image) FROM stdin;
+sushil	Sushil	sushilmahajan124@gmail.com	$2b$10$OxyXqxCURUWo2fx6xUlCP.EJgeC50yWRFY2zkakBbCl6zf7Hcy1ru	8328862861	COEP Hostel, Shivajinagar, Pune	T.Y. B.Tech, Computer Engineering	../images/studentprofile.svg
+sumit	Sumit Mahajan	sumitmahajan2001@gmail.com	$2b$10$Qzr3NIA8FC6ryTZ4yZDImeyVL.jNAfA12D2ggXMtGCCNTw6culaES	9823472324	203, Padma CHS, Mula Road, Khadki, Pune	T.Y. B.Tech, Information Technology	../images/studentprofile.svg
+\.
+
+
+--
+-- Name: notes_product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.notes_product_id_seq', 1, false);
+
+
+--
+-- Name: product_product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.product_product_id_seq', 11, true);
+
+
+--
+-- Name: book book_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.book
+    ADD CONSTRAINT book_pkey PRIMARY KEY (product_id);
+
+
+--
+-- Name: calculator calculator_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.calculator
+    ADD CONSTRAINT calculator_pkey PRIMARY KEY (product_id);
+
+
+--
+-- Name: cart cart_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cart
+    ADD CONSTRAINT cart_pkey PRIMARY KEY (username, product_id);
+
+
+--
+-- Name: clothing clothing_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.clothing
+    ADD CONSTRAINT clothing_pkey PRIMARY KEY (product_id);
+
+
+--
+-- Name: notes notes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.notes
+    ADD CONSTRAINT notes_pkey PRIMARY KEY (product_id);
+
+
+--
+-- Name: other other_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.other
+    ADD CONSTRAINT other_pkey PRIMARY KEY (product_id);
+
+
+--
+-- Name: pc pc_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pc
+    ADD CONSTRAINT pc_pkey PRIMARY KEY (product_id);
+
+
+--
+-- Name: product product_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product
+    ADD CONSTRAINT product_pkey PRIMARY KEY (product_id);
+
+
+--
+-- Name: requests requests_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.requests
+    ADD CONSTRAINT requests_pkey PRIMARY KEY (buyer_id, seller_id, product_id);
+
+
+--
+-- Name: user user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."user"
+    ADD CONSTRAINT user_pkey PRIMARY KEY (username);
+
+
+--
+-- Name: document_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX document_idx ON public.product USING gin (document_with_idx);
+
+
+--
+-- Name: book book_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.book
+    ADD CONSTRAINT book_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.product(product_id) ON DELETE CASCADE;
+
+
+--
+-- Name: calculator calculator_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.calculator
+    ADD CONSTRAINT calculator_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.product(product_id) ON DELETE CASCADE;
+
+
+--
+-- Name: cart cart_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cart
+    ADD CONSTRAINT cart_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.product(product_id) ON DELETE CASCADE;
+
+
+--
+-- Name: cart cart_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cart
+    ADD CONSTRAINT cart_username_fkey FOREIGN KEY (username) REFERENCES public."user"(username) ON DELETE CASCADE;
+
+
+--
+-- Name: clothing clothing_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.clothing
+    ADD CONSTRAINT clothing_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.product(product_id) ON DELETE CASCADE;
+
+
+--
+-- Name: notes notes_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.notes
+    ADD CONSTRAINT notes_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.product(product_id) ON DELETE CASCADE;
+
+
+--
+-- Name: other other_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.other
+    ADD CONSTRAINT other_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.product(product_id) ON DELETE CASCADE;
+
+
+--
+-- Name: pc pc_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pc
+    ADD CONSTRAINT pc_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.product(product_id) ON DELETE CASCADE;
+
+
+--
+-- Name: product product_seller_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product
+    ADD CONSTRAINT product_seller_id_fkey FOREIGN KEY (seller_id) REFERENCES public."user"(username) ON DELETE CASCADE;
+
+
+--
+-- Name: requests requests_buyer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.requests
+    ADD CONSTRAINT requests_buyer_id_fkey FOREIGN KEY (buyer_id) REFERENCES public."user"(username) ON DELETE CASCADE;
+
+
+--
+-- Name: requests requests_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.requests
+    ADD CONSTRAINT requests_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.product(product_id) ON DELETE CASCADE;
+
+
+--
+-- Name: requests requests_seller_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.requests
+    ADD CONSTRAINT requests_seller_id_fkey FOREIGN KEY (seller_id) REFERENCES public."user"(username) ON DELETE CASCADE;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

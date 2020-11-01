@@ -21,7 +21,6 @@ router.get("/:productID/:buyerID/:sellerID", function (req, res) {
                 // the seller is logged in
                 (async () => {
                     const client = await db.connect();
-
                     try {
                         await client.query("BEGIN");
                         var otp = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
