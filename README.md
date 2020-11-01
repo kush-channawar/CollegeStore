@@ -1,7 +1,11 @@
-# CollegeStore - BuySell Web App
+# DBMS Project: CollegeStore - BuySell Web App
 This website is for CoEP students especially freshers who find it difficult to get used books & other study material. 
 Seniors can post ads for products which they have used in previous semester. Basically a user can sell as well as buy products here.
 This portal connects freshers with their seniors who are interested in selling their used study material.
+
+## Developers:
+1. Kush Vijay Channawar - 111803068
+2. Sushil Pandit Mahajan - 111803073
 
 ## Technologies
 - HTML 5, CSS 3, Bootstrap 4
