@@ -1,0 +1,131 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://kit.fontawesome.com/7cd5bd2715.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="../css/cartstyle.css" />
+    <title>CollegeStore | <%= user %>'s Cart</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg fixed-top bg-light">
+      <p class="navbar-brand">CollegeStore</p>
+      <button
+        class="navbar-toggler custom-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/homepage">Home </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="navbarDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            ><%= user %> <i class="fas fa-user-circle"></i>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="/profile/<%= user %>">Profile</a>
+              <a class="dropdown-item" href="/request/0">My Deals</a>
+              <a class="dropdown-item" href="/history/0">My History</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/logout">Log Out</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/sellproduct">Sell </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <section id="main">
+      <% if (details.length > 0) { %> <% var total = 0; for(var i=0; i <
+      details.length; i++) { -%>
+      <div class="row product-info">
+        <div class="pict col-lg-4 col-md-4">
+          <img src="<%= details[i].product_image %>" alt="This is a image" />
+        </div>
+        <div class="content col-lg-8 col-md-8">
+          <h3><%= details[i].product_name %></h3>
+          <h5>Product Id : <span class="details"><%= details[i].product_id %></span></h5>
+          <h5>Years of Usage : <span class="details"><%= details[i].years_of_usage %></span></h5>
+          <h5>Condition : <span class="details"><%= details[i].condition %></span></h5>
+          <h5>Price : <span class="details">Rs. <%= details[i].price %></span></h5>
+          <br />
+          <h3>Seller Info</h3>
+          <h5>Username: <span class="details"><%= details[i].username %></span></h5>
+          <h5>Name : <span class="details"><%= details[i].name %></span></h5>
+          <h5>Contact No : <span class="details"><%= details[i].contact %></span></h5>
+          <h5>Email : <span class="details"><%= details[i].email_id %></span></h5>
+          <h5>Preferred Location : <span class="details"><%= details[i].location %></span></h5>
+          <h5>Branch/Year : <span class="details"><%= details[i].year %></span></h5>
+        </div>
+        <a
+          class="col-lg-4 buy-button btn btn-success"
+          href="/cart/1/<%= details[i].product_id %>"
+        >
+          Buy
+        </a>
+        <a
+          class="col-lg-4 buy-button btn btn-danger"
+          href="/cart/0/<%= details[i].product_id %>"
+        >
+          Remove from Cart
+        </a>
+      </div>
+      <% total = total + details[i].price; } -%> 
+      <div class="footer">
+      <p>Total Cost : Rs. <%= total %></p>
+    </div>
+      <% } else { %>
+         <h3 style="text-align: center; margin-top: 300px;">Cart is Empty</h3>
+        <h4 style="text-align: center;">Search for a desired product and add to cart <a href="/homepage">here</a></h4>
+      <% } %>
+    </section>
+    <% if( cartmsg != ''){ %>
+      <div id="snackbar"><%= cartmsg %></div>
+    <% } %>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      var sb = document.getElementById("snackbar");
+      setTimeout(function(){sb.classList.add("show")},200);
+      setTimeout(function(){sb.classList.remove("show")},2000);
+    </script>
+  </body>
+</html>

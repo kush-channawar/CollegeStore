@@ -1,0 +1,150 @@
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/7cd5bd2715.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../css/productstyle.css">
+    <title>CollegeStore | Product Name </title>
+  </head>
+  <body>
+        <nav class="navbar navbar-expand-lg fixed-top bg-light">
+          <p class="navbar-brand">CollegeStore</p>
+          <button class="navbar-toggler custom-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item active">
+                <a class="nav-link" href="/homepage">Home  </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <%= user %>  <i class="fas fa-user-circle"></i>  
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="/profile/<%= user %>">Profile</a>
+                  <a class="dropdown-item" href="/request/0">My Deals</a>
+                  <a class="dropdown-item" href="/history/0">My History</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="/logout">Log Out</a>
+                </div>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="/sellproduct">Sell  </a>
+                </li>
+              <li class="nav-item">
+                <a class="nav-link cart" href="/cart"><i class="fas fa-shopping-cart"></i> Cart</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+          
+          <section id="picture">
+              <div class="row product-info">
+              <div class="pict col-lg-4">
+                <img src="<%= details[0][4] %>">
+                <div class="atc">
+                  <% if (user != details[0][7]) { %>
+                  <a href="/cart/<%= details[0][0] %>" class="btn btn-primary">Add to Cart</a>
+                  <% } else { %>
+                  <a href="/cart/<%= details[0][0] %>" class="btn btn-primary" style="visibility: hidden;">Add to Cart</a>
+                    <% } %>
+                </div>
+              </div>
+              <div class="content col-lg-8">
+                <h3><%= details[0][1] %></h3>
+                <h5>Product Id : <span class="details"><%= details[0][0] %></span></h5>
+                <h5>Years of Usage : <span class="details"><%= details[0][2] %></span></h5>
+                <h5>Condition : <span class="details"><%= details[0][5] %></span></h5>
+                <h5>Price : <span class="details">Rs. <%= details[0][3] %></span></h5>
+                  <br>
+                  <% if(category[0][0] == "books"){ %>
+                    <h3>Details</h3>
+                    <h5>Author : <span class="details"><%= details[0][13] %></span></h5>
+                    <h5>Publication : <span class="details"><%= details[0][14] %></span></h5>
+                    <h5>Edition : <span class="details"><%= details[0][15] %></span></h5>
+                    <h5>Subject : <span class="details"><%= details[0][16] %></span></h5>
+                  <% } %>
+                  <% if(category[0][0] == "notes"){ %>
+                    <h3>Details</h3>
+                    <h5>Topic : <span class="details"><%= details[0][13] %></span></h5>
+                    <h5>Professor : <span class="details"><%= details[0][14] %></span></h5>
+                    <h5>Year : <span class="details"><%= details[0][15] %></span></h5>
+                    <h5>Subject : <span class="details"><%= details[0][16] %></span></h5>
+                  <% } %>
+                  <% if(category[0][0] == "calculators"){ %>
+                    <h3>Details</h3>
+                    <h5>Brand : <span class="details"><%= details[0][13] %></span></h5>
+                    <h5>Model : <span class="details"><%= details[0][14] %></span></h5>
+                    <h5>Features : <span class="details"><%= details[0][15] %></span></h5>
+                  <% } %>
+                  <% if(category[0][0] == "other"){ %>
+                    <h3>Details</h3>
+                    <h5>Type : <span class="details"><%= details[0][13] %></span></h5>
+                    <h5>Description : <span class="details"><%= details[0][14] %></span></h5>
+                  <% } %>
+                  <% if(category[0][0] == "clothing"){ %>
+                    <h3>Details</h3>
+                    <h5>Size : <span class="details"><%= details[0][13] %></span></h5>
+                    <h5>Type : <span class="details"><%= details[0][14] %></span></h5>
+                    <h5>Color : <span class="details"><%= details[0][15] %></span></h5>
+                  <% } %>
+                  <% if(category[0][0] == "pcs"){ %>
+                    <h3>Details</h3>
+                    <h5>OS : <span class="details"><%= details[0][13] %></span></h5>
+                    <h5>RAM : <span class="details"><%= details[0][14] %></span></h5>
+                    <h5>Storage : <span class="details"><%= details[0][15] %></span></h5>
+                    <h5>Brand : <span class="details"><%= details[0][16] %></span></h5>
+                    <h5>Processor : <span class="details"><%= details[0][17] %></span></h5>
+                  <% } %>
+                  <br>
+                <h3>Seller Info</h3>
+                <h5>Username: <span class="details"><%= details[0][7] %></span></h5>
+                <h5>Name : <span class="details"><%= details[0][8] %></span></h5>
+                <h5>Contact No : <span class="details"><%= details[0][10] %></span></h5>
+                <h5>Email : <span class="details"><%= details[0][9] %></span></h5>
+                <h5>Preferred Location : <span class="details"><%= details[0][11] %></span></h5>
+                <h5>Branch/Year : <span class="details"><%= details[0][12] %></span></h5>
+                
+              </div>
+            </div>
+          </section>
+          <hr width="75%">
+          <section id="Comments">
+            <h2>Comments</h2>
+            <div class="container pb-cmnt-container"></div>
+              <div class="row">
+                  <div class="col-md-6 col-md-offset-3">
+                      <div class="panel panel-info">
+                          <div class="panel-body">
+                              <form method="POST">
+                                <textarea name="comment" id="comment" placeholder="Write your comment here!" class="pb-cmnt-textarea"></textarea>
+                                <button class="btn btn-primary pull-right" type="submit">Share</button>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="added-comments">
+            <% for(var i=0; i<comments.length; i++) { -%>
+              <div class="comment">
+                  <a href="/profile/<%= comments[i][0] %>" >
+                  <h6><%= comments[i][0] %></h6>
+                  </a>
+                  <p><%= comments[i][1] %></p>
+              </div>
+              <hr width="100%">
+            <% } -%>
+          </div>
+          </section>
+          <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+          <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+          <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        </body>
+      </html>

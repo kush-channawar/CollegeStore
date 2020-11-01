@@ -1,0 +1,203 @@
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://kit.fontawesome.com/7cd5bd2715.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="../css/ongoing.css" />
+    <title>CollegeStore | <%= username %>'s Current Transactions</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg fixed-top bg-light">
+      <p class="navbar-brand">CollegeStore</p>
+      <button
+        class="navbar-toggler custom-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/homepage">Home </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="navbarDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            ><%= username %> <i class="fas fa-user-circle"></i>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="/profile/<%= username %>">Profile</a>
+              <a class="dropdown-item" href="/history/0">My History</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/logout">Log Out</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/sellproduct">Sell </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link cart" href="/cart"
+              ><i class="fas fa-shopping-cart"></i> Cart</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <section id="picture">
+      <section class="rad">
+        <div class="container" style="text-align: justify;">
+        <%= typeof msg != 'undefined' ? msg : '' %>
+        </div>
+        <% if (action == 'sale' ) { %>
+        <label class="radio-inline"
+          ><input name="optradio" onclick="document.location.href='/request/0'" type="radio" checked>For Sale</input></label
+        >
+        <label class="radio-inline"
+          ><input name="optradio" onclick="document.location.href='/request/1'" type="radio" >For purchase</input></label
+        >
+        <% } else { %>
+          <label class="radio-inline"
+          ><input name="optradio" onclick="document.location.href='/request/0'" type="radio" >For Sale</input></label
+        >
+        <label class="radio-inline"
+          ><input name="optradio" onclick="document.location.href='/request/1'" type="radio" checked >For purchase</input></label
+        >
+          <% } %>
+      </section>
+      <% if (product.length > 0) { %>
+      <% if (action == 'sale') { %>
+        <% var j=0; %>
+      <h1>Products you added for sale</h1>
+      <hr width="100%" />
+      <% for (var i=0; i<product.length;i++) { %>
+      <div class="row product-info">
+        <div class="pict col-lg-4">
+          <a href="/product/<%= product[i].product_id %>" class="info">
+          <img src= "<%= product[i].product_image %>"/>
+          </a>
+        </div>
+        <div class="content col-lg-8">
+          <a href="/product/<%= product[i].product_id %>" class="info">
+          <h3><%= product[i].product_name %></h3>
+          <h5>Product Id : <span class="details"><%= product[i].product_id %></span></h5>
+          <h5>Price : <span class="details">Rs. <%= product[i].price %></span></h5>
+        </a>
+          <% if (typeof rProduct[j] != 'undefined') { %>
+          <% if (rProduct[j].product_id == product[i].product_id) { %>
+          <h4>Buyers Interested</h4>
+          <% while (j < rProduct.length && rProduct[j].product_id == product[i].product_id) { %>
+          <h5><a href = "/profile/<%= rProduct[j].buyer_id %>"><%= rProduct[j].buyer_id %></a></h5>
+            <% j++;} %>
+          <% } else { %>
+            <h4>No buyers yet :-(</h4>
+          <% } %>
+          <% } else { %>
+             <h4>No buyers yet :-(</h4>
+          <% } %>
+          <div class="tp">
+          <a href="/sold/<%= product[i].product_id %>" class=" btn btn-primary atc">Mark Sold</a>
+          <a href="/editproduct/<%= product[i].category %>&<%= product[i].product_id %>" class=" btn btn-primary atc">Edit Info</a>
+          </div>
+        </div>
+      </div>
+    <% } %>
+    <% } else { %>
+      <h1>Products you requested for purchase</h1>
+      <hr width="100%" />
+      <% for (var i=0; i<product.length;i++) { %>
+      <div class="row product-info">
+        <div class="pict col-lg-4">
+          <img src= "<%= product[i].product_image %>" />
+          <div class="atc btn-danger">
+            Pass: <%= rProduct[i].otp %>
+          </div>
+        </div>
+        <div class="content col-lg-8">        
+          <h3><%= product[i].product_name %></h3>
+          <h5>Product Id : <span class="details"><%= product[i].product_id %></span></h5>
+          <h5>Price : <span class="details">Rs. <%= product[i].price %></span></h5>
+          <h3>Seller</h3>
+          <h5><a href = "/profile/<%= rProduct[i].seller_id %>"><%= rProduct[i].seller_id %></a></h5>
+          <h5>Note: For transaction validation & receipt, Give this pass to seller only after receiving product</h5>
+        </div>
+      </div>
+    <% } %>
+    <% } %> 
+  <% } else { %>
+       <h3 style="text-align: center; margin-top: 250px;"> No Results </h3>
+    <% } %>
+      <!--Sold product template-->
+     <!--  <div class="row product-info">
+        <div class="pict col-lg-4">
+          <img src="../images/notes.jpg" />
+          <div class="atc btn-success">
+            Sold
+          </div>
+        </div>
+        <div class="content col-lg-8">
+          <h2>Product Name</h2>
+          <h4>Product Id :</h4>
+          <h4>Years of Usage :</h4>
+          <h4>Condition :</h4>
+          <h3>Price :</h3>
+          <br />
+          <h2>Seller Info</h2>
+          <h4>Username:</h4>
+          <h4>Name :</h4>
+          <h4>Contact No :</h4>
+          <h4>Email :</h4>
+          <h4>Preferred Location :</h4>
+          <h4>Branch/Year :</h4>
+        </div>
+        <div class="col">
+          <p>Date of transaction :</p>
+          <p>Verified by buyer : Buyer's Username</p>
+        </div>
+      </div> -->
+    </section>
+
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+      integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

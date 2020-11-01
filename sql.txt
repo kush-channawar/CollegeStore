@@ -1,0 +1,292 @@
+CREATE TABLE "user" (
+    username character varying PRIMARY KEY,
+    name character varying NOT NULL,
+    email_id character varying NOT NULL,
+    password character varying NOT NULL,
+    contact character varying NOT NULL,
+    location character varying NOT NULL,
+    year character varying NOT NULL,
+    image character varying DEFAULT '../images/studentprofile.svg'
+);
+
+CREATE TABLE product (
+    product_id SERIAL PRIMARY KEY ,
+    product_name character varying NOT NULL,
+    years_of_usage INT,
+    price INT NOT NULL,
+    product_image character varying,
+    seller_id character varying NOT NULL,
+    category character varying NOT NULL,
+    condition character varying NOT NULL,
+    FOREIGN KEY (seller_id) REFERENCES "user" (username) ON DELETE CASCADE
+);
+
+CREATE TABLE "cart" (
+    username character varying,
+    product_id int,
+    PRIMARY KEY (username, product_id),
+    FOREIGN KEY (username) REFERENCES "user" (username) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES "product" (product_id) ON DELETE CASCADE
+); 
+
+CREATE table "comments" (
+comment_id SERIAL PRIMARY KEY,
+username character varying,
+product_id int,
+content character varying NOT NULL,
+FOREIGN KEY (product_id) REFERENCES "product" (product_id) ON DELETE CASCADE,
+FOREIGN KEY (username) REFERENCES "user" (username) ON DELETE CASCADE
+);
+
+CREATE TABLE "tempmail" (
+    email character varying,
+    otp character varying
+);
+
+CREATE TABLE "recommender" (
+	username character varying NOT NULL,
+	product_id int NOT NULL,
+	priority int DEFAULT '0',
+    	PRIMARY KEY (username, product_id),
+    	FOREIGN KEY (username) REFERENCES "user" (username) ON DELETE CASCADE,
+    	FOREIGN KEY (product_id) REFERENCES "product" (product_id) ON DELETE CASCADE
+); 
+
+CREATE TABLE "requests" (
+    buyer_id character varying NOT NULL,
+    seller_id character varying NOT NULL,
+    product_id int NOT NULL,
+    otp int NOT NULL,
+    PRIMARY KEY (buyer_id,seller_id,product_id),
+    FOREIGN KEY (buyer_id) REFERENCES "user" (username) ON DELETE CASCADE,
+    FOREIGN KEY (seller_id) REFERENCES "user" (username) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES "product" (product_id) ON DELETE CASCADE
+);
+
+CREATE TABLE "transaction" (
+    transaction_id SERIAL PRIMARY KEY,
+    buyer_id character varying,
+    seller_id character varying,
+    product_name character varying NOT NULL,
+    finalized_price int NOT NULL,
+    product_image character varying NOT NULL,
+    FOREIGN KEY (buyer_id) REFERENCES "user" (username) ON DELETE CASCADE,
+    FOREIGN KEY (seller_id) REFERENCES "user" (username) ON DELETE CASCADE
+);
+
+CREATE TABLE "book"(
+	  product_id int,
+	  publication character varying NOT NULL,
+	  edition character varying NOT NULL,
+	  subject character varying NOT NULL,
+	  author character varying NOT NULL,
+	  PRIMARY KEY (product_id),
+      FOREIGN KEY (product_id) REFERENCES "product" (product_id) ON DELETE CASCADE,
+      CONSTRAINT notnullchecker CHECK (
+        NOT (
+        ( publication IS NULL  OR  publication = '' )
+            OR
+        ( edition IS NULL  OR  edition = '' )
+            OR
+        ( subject IS NULL OR subject = '' )
+            OR
+        ( author IS NULL OR author = '' )
+   )
+ )
+);
+
+CREATE TABLE "calculator"(
+	  product_id int, 
+	  brand character varying NOT NULL, 
+	  model character varying NOT NULL,
+	  features character varying NOT NULL,
+	  PRIMARY KEY (product_id),
+	  FOREIGN KEY (product_id) REFERENCES "product" (product_id) ON DELETE CASCADE,
+	  CONSTRAINT notnullchecker CHECK (
+        NOT (
+        ( brand IS NULL  OR  brand = '' )
+            OR
+        ( model IS NULL  OR  model = '' )
+            OR
+        ( features IS NULL OR features = '' )
+   )
+ )
+	);
+
+
+CREATE TABLE "clothing"
+	(
+	  product_id int,
+	  size character varying NOT NULL,
+	  type character varying NOT NULL,
+	  color character varying NOT NULL,
+	  PRIMARY KEY (product_id),
+	   FOREIGN KEY (product_id) REFERENCES "product" (product_id) ON DELETE CASCADE,
+	   CONSTRAINT notnullchecker CHECK (
+        NOT (
+        ( size IS NULL  OR  size = '' )
+            OR
+        ( type IS NULL  OR  type = '' )
+            OR
+        ( color IS NULL OR color = '' )   
+   )
+ )
+);
+
+
+CREATE TABLE "notes"(
+	  "product_id" serial,
+	  "subject" character varying NOT NULL,
+	  "topic" character varying NOT NULL,
+	  "professor" character varying NOT NULL,
+	  "noteyear" character varying NOT NULL,
+	  PRIMARY KEY ("product_id"),
+	  FOREIGN KEY (product_id) REFERENCES "product" (product_id) ON DELETE CASCADE,
+	  CONSTRAINT notnullchecker CHECK (
+        NOT (
+        ( subject IS NULL  OR  subject = '' )
+            OR
+        ( topic IS NULL  OR  topic = '' )
+            OR
+        ( professor IS NULL OR professor = '' )
+            OR
+        ( noteyear IS NULL OR noteyear = '' )    
+   )
+ )
+	);
+
+CREATE TABLE "other"
+	(
+	  "product_id" int ,
+	  "description" character varying NOT NULL,
+	  "type" character varying,
+	  PRIMARY KEY ("product_id"),
+	   FOREIGN KEY (product_id) REFERENCES "product" (product_id) ON DELETE CASCADE,
+	   CONSTRAINT notnullchecker CHECK (
+        NOT (
+        ( description IS NULL  OR  description = '' )
+            OR
+        ( type IS NULL  OR  type = '' )
+   )
+ )
+	);
+
+CREATE TABLE "pc"
+	(
+	  "product_id" int,
+	  "os" character varying,
+	  "ram" character varying,
+	  "storage" character varying,
+	  "brand" character varying,
+	  "processor" character varying,
+        PRIMARY KEY ("product_id"),
+        FOREIGN KEY (product_id) REFERENCES "product" (product_id) ON DELETE CASCADE,
+        CONSTRAINT notnullchecker CHECK (
+        NOT (
+        ( os IS NULL  OR  os = '' )
+            OR
+        ( ram IS NULL)
+            OR
+        ( storage IS NULL)
+            OR
+        ( brand IS NULL OR brand = '' )
+            OR
+        ( processor IS NULL oR processor = '' )
+   )
+ )
+);
+
+
+
+CREATE OR REPLACE FUNCTION insertuser()
+RETURNS trigger AS
+$BODY$
+DECLARE 
+	t_row "product"%rowtype;
+BEGIN
+	FOR t_row in SELECT "product_id" FROM "product" LOOP
+        	INSERT INTO "recommender" VALUES(new."username",t_row."product_id",'0');
+        END LOOP;
+	RETURN new;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER user_t
+  AFTER INSERT
+  ON "user"
+  FOR EACH ROW
+  EXECUTE PROCEDURE insertuser();
+
+
+
+CREATE OR REPLACE FUNCTION insertproduct()
+RETURNS trigger AS
+$BODY$
+DECLARE 
+	t_row "user"%rowtype;
+BEGIN
+	FOR t_row in SELECT "username" FROM "user" LOOP
+        	INSERT INTO "recommender" VALUES(t_row."username",new."product_id",'0');
+        END LOOP;
+	RETURN new;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER product_t
+  AFTER INSERT
+  ON "product"
+  FOR EACH ROW
+  EXECUTE PROCEDURE insertproduct();
+
+
+CREATE VIEW bookview AS
+select "product".product_id,"product".product_name,"product".years_of_usage,"product".price,"product".product_image,"product".condition,"product".category,
+username, name, email_id, contact, location, year, "book".author,"book".publication,"book".edition,"book".subject
+from "product" inner join "user" on
+"product".seller_id = "user".username inner join "book" on 
+"product".product_id = "book".product_id;
+
+CREATE VIEW notesview AS
+select "product".product_id,"product".product_name,"product".years_of_usage,"product".price,"product".product_image,"product".condition,"product".category,
+username, name, email_id, contact, location, year, "notes".topic,"notes".professor,"notes".noteyear,"notes".subject
+from "product" inner join "user" on
+"product".seller_id = "user".username inner join "notes" on 
+"product".product_id = "notes".product_id;
+
+CREATE VIEW clothview AS
+select "product".product_id,"product".product_name,"product".years_of_usage,"product".price,"product".product_image,"product".condition,"product".category,
+username, name, email_id, contact, location, year, "clothing".size,"clothing".type,"clothing".color
+from "product" inner join "user" on
+"product".seller_id = "user".username inner join "clothing" on 
+"product".product_id = "clothing".product_id;
+
+CREATE VIEW otherview AS
+select "product".product_id,"product".product_name,"product".years_of_usage,"product".price,"product".product_image,"product".condition,"product".category,
+username, name, email_id, contact, location, year,"other".type,"other".description
+from "product" inner join "user" on
+"product".seller_id = "user".username inner join "other" on 
+"product".product_id = "other".product_id;
+
+CREATE VIEW pcview AS
+select "product".product_id,"product".product_name,"product".years_of_usage,"product".price,"product".product_image,"product".condition,"product".category,
+username, name, email_id, contact, location, year,"pc".os,"pc".ram,"pc".storage,"pc".brand, "pc".processor
+from "product" inner join "user" on
+"product".seller_id = "user".username inner join "pc" on 
+"product".product_id = "pc".product_id;
+
+CREATE VIEW calcview AS
+select "product".product_id,"product".product_name,"product".years_of_usage,"product".price,"product".product_image,"product".condition,"product".category,
+username, name, email_id, contact, location, year,"calculator".brand,"calculator".model,"calculator".features
+from "product" inner join "user" on
+"product".seller_id = "user".username inner join "calculator" on 
+"product".product_id = "calculator".product_id;
+
+
+ALTER TABLE product
+ADD COLUMN document_with_idx tsvector;
+CREATE INDEX document_idx ON product USING GIN(document_with_idx);
+
+//UPDATE product 
+//SET document_with_idx = to_tsvector();
