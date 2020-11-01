@@ -4,8 +4,8 @@ Seniors can post ads for products which they have used in previous semester. Bas
 This portal connects freshers with their seniors who are interested in selling their used study material.
 
 ## Developers:
-1. Kush Vijay Channawar - 111803068
-2. Sushil Pandit Mahajan - 111803073
+1. Kush Vijay Channawar - 111803068 T2
+2. Sushil Pandit Mahajan - 111803073 T3
 
 ## Technologies
 - HTML 5, CSS 3, Bootstrap 4
@@ -24,7 +24,7 @@ This portal connects freshers with their seniors who are interested in selling t
 ![Alt text](public/images/env.png?raw=true "Title")
 You will have to use your own crypto key & iv and also your own database credentials
 
-
+ 
 ## How it Works
 1. User first has to register with valid mail id
 2. User can add products for sale or buy from available products
